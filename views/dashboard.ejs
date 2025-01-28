@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Shop</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+  </head>
+  <body class="bg-gray-50">
+    <% if (messages.success) { %>
+    <div class="absolute top-3 left-2/4 p-3 text-white rounded-md bg-blue-500">
+      <span class="inline-block mt-1 mb-1 text-white">
+        <%= messages.success %>
+      </span>
+    </div>
+    <% } %> <% if (messages.error) { %>
+    <div class="absolute top-3 left-2/4 p-3 text-white rounded-md bg-blue-500">
+      <span class="inline-block mt-1 mb-1 text-white">
+        <%= messages.error %>
+      </span>
+    </div>
+    <% } %>
+
+    <header class="bg-blue-500 p-4">
+      <nav
+        class="max-w-7xl mx-auto flex justify-between items-center text-white"
+      >
+        <a href="/" class="text-2xl font-semibold">Dashboard</a>
+        <div>
+          <a href="/shop" class="text-xl m-4">Shop</a>
+          <a href="/owner/orders" class="text-xl m-4">Orders</a>
+          <form action="/user/logout" method="POST" class="inline">
+            <button
+              value="logout"
+              type="submit"
+              class="text-xl m-4 bg-transparent border-none text-white cursor-pointer hover:underline"
+            >
+              Logout
+            </button>
+          </form>
+        </div>
+      </nav>
+    </header>
+    <!-- Main Container -->
+    <div
+      class="max-w-screen-xl mx-auto py-8 px-4 space-y-8 md:space-y-0 md:flex md:space-x-8"
+    >
+      <!-- Right Side: Products (Mobile stack, Desktop 60% width) -->
+      <div class="w-full md:w-2/3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- Product Cards -->
+          <% products.forEach(function (product) { %>
+          <div class="bg-white p-2 rounded-lg shadow-lg relative">
+            <!-- Product Image -->
+            <div class="w-full h-52 bg-blue-600 mb-2">
+              <% if(product.image){%>
+              <img
+                src="data:image/jpeg;base64,<%= product.image %>"
+                alt="<%= product.name %>"
+                class="w-full h-full object-cover"
+              />
+              <%} %> <% if(product.imageUrl){%>
+              <img
+                src="<%= product.imageUrl %>"
+                alt="<%= product.name %>"
+                class="w-full h-full object-cover"
+              />
+              <%} %>
+            </div>
+
+            <!-- Product Name and Price -->
+            <h4 class="text-xl font-semibold mb-2"><%= product.name %></h4>
+            <p class="text-lg font-bold text-gray-800"><%= product.price %></p>
+
+            <!-- View Details Link -->
+            <a
+              href="/product/<%= product.id %>"
+              class="text-blue-500 hover:underline mt-4 inline-block"
+            >
+              View Details
+            </a>
+
+            <!-- Add Product Button (with + Icon) -->
+            <div
+              class="absolute bottom-6 right-4 bg-green-500 text-white p-2 rounded-full cursor-pointer hover:bg-green-600"
+            >
+              <a href="/addtocart/<%= product._id %>">
+                <i class="fas fa-plus"></i>
+              </a>
+            </div>
+          </div>
+          <% }) %>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
