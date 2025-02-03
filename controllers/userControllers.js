@@ -73,7 +73,7 @@ exports.loginUser = async function (req, res) {
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: "Email or Password is incorrect.",
+        message: "Invalid email or password.",
       });
     }
 
@@ -98,8 +98,10 @@ exports.loginUser = async function (req, res) {
         },
       });
     } else {
-      req.flash("error", "Invalid email or password.");
-      return res.redirect("/");
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email or password.",
+      });
     }
   } catch (error) {
     console.error("Login Error:", error.message);
