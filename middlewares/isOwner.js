@@ -3,8 +3,10 @@ const jwt = require("jsonwebtoken");
 
 module.exports = async function (req, res, next) {
   if (!req.cookies.token) {
-    req.flash("error", "you need to login first");
-    return res.redirect("/");
+    return res.status(401).json({
+      message: "You need to log in first.",
+      redirect: "/login",
+    });
   }
 
   try {
@@ -15,15 +17,19 @@ module.exports = async function (req, res, next) {
       .select("-password");
 
     if (!owner) {
-      req.flash("error", "You are not authorized to access that route");
-      return res.redirect("/");
+      return res.status(403).json({
+        message: "You are not authorized to access this route.",
+        redirect: "/",
+      });
     }
 
     req.owner = owner;
     next();
   } catch (error) {
     console.error("Owner Middleware Error:", error.message);
-    req.flash("error", "Something went wrong");
-    res.status(500).redirect("/");
+    return res.status(500).json({
+      message: "Something went wrong.",
+      redirect: "/",
+    });
   }
 };

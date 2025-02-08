@@ -3,8 +3,10 @@ const userModel = require("../models/user-model");
 
 module.exports = async function (req, res, next) {
   if (!req.cookies.token) {
-    req.flash("error", "you need to login first");
-    return res.redirect("/");
+    return res.status(401).json({
+      message: "You need to log in first.",
+      redirect: "/login",
+    });
   }
 
   try {
@@ -12,10 +14,21 @@ module.exports = async function (req, res, next) {
     let user = await userModel
       .findOne({ email: decoded.email })
       .select("-password");
+
+    if (!user) {
+      return res.status(403).json({
+        message: "User not found or unauthorized.",
+        redirect: "/login",
+      });
+    }
+
     req.user = user;
     next();
   } catch (error) {
-    req.flash("error", "Something went wrong");
-    res.status(500).redirect("/");
+    console.error("Login Middleware Error:", error.message);
+    return res.status(500).json({
+      message: "Something went wrong.",
+      redirect: "/",
+    });
   }
 };

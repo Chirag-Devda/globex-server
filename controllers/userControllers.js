@@ -51,6 +51,7 @@ exports.createUser = async function (req, res) {
         user: {
           email: newUser.email,
           fullname: newUser.fullname,
+          role: newUser.role,
         },
       },
     });
@@ -94,6 +95,7 @@ exports.loginUser = async function (req, res) {
           user: {
             email: user.email,
             fullname: user.fullname,
+            role: user.role,
           },
         },
       });
