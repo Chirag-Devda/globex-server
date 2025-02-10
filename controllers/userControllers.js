@@ -38,7 +38,7 @@ exports.createUser = async function (req, res) {
     await newUser.save();
 
     // Generate token
-    let token = generateToken(newUser);
+    let token = generateToken(newUser, "user");
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -82,7 +82,7 @@ exports.loginUser = async function (req, res) {
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (isMatch) {
-      const token = generateToken(user);
+      const token = generateToken(user, "user");
       res.cookie("token", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",

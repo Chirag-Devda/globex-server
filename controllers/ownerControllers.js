@@ -30,7 +30,7 @@ exports.createOwner = async function (req, res) {
     });
 
     // Generate token
-    let token = generateToken(newOwner);
+    let token = generateToken(newOwner, "owner");
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // Secure cookie in production
@@ -79,7 +79,7 @@ exports.loginOwner = async function (req, res) {
     // if password matches
     if (isMatch) {
       // Generate a token for the owner
-      const token = generateToken(owner);
+      const token = generateToken(owner, "owner");
 
       // Set the token as a cookie
       res.cookie("token", token, {

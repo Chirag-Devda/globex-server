@@ -14,6 +14,7 @@ const usersRouter = require("./routes/userRouter");
 const productsRouter = require("./routes/productRouter");
 const shopsRouter = require("./routes/shopRouter");
 const cartRouter = require("./routes/cartRouter");
+const authRouter = require("./routes/authRouter");
 
 const db = require("./config/mongoose-connection");
 
@@ -38,6 +39,7 @@ app.use(
 app.use(flash());
 
 app.use("/", indexRouter);
+app.use("/auth", authRouter);
 app.use("/owner", ownersRouter);
 app.use("/user", usersRouter);
 app.use("/product", productsRouter);
