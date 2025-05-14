@@ -1,9 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const isOwner = require("../middlewares/isOwner");
+const isAuth = require("../middlewares/isAuth");
 const {
   createOwner,
-  showLoginForm,
   loginOwner,
   ownerDashboard,
 } = require("../controllers/ownerControllers");
@@ -14,6 +13,6 @@ if (process.env.NODE_ENV === "development") {
 
 router.post("/login", loginOwner);
 
-router.get("/dashboard", isOwner, ownerDashboard);
+router.get("/dashboard", isAuth, ownerDashboard);
 
 module.exports = router;

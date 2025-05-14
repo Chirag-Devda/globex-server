@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const isLoggedin = require("../middlewares/isLoggedin");
+const isAuth = require("../middlewares/isAuth");
 const productModel = require("../models/product-model");
 
-router.get("/", isLoggedin, async (req, res) => {
+router.get("/", isAuth, async (req, res) => {
   try {
     let products = await productModel.find();
 

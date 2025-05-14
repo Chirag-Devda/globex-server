@@ -15,7 +15,10 @@ exports.createOwner = async function (req, res) {
     if (owners.length > 0) {
       return res
         .status(403) // Use 403 (Forbidden) for permission issues
-        .send("You don't have permission to create a new owner.");
+        .json({
+          success: false,
+          message: "You don't have permission to create a new owner.",
+        });
     }
 
     // Hash the password
@@ -39,12 +42,10 @@ exports.createOwner = async function (req, res) {
     return res.status(201).json({
       success: true,
       message: "Registered successfully. Token set in cookies.",
-      data: {
-        owner: {
-          email: newOwner.email,
-          fullname: newOwner.fullname,
-          role: newOwner.role,
-        },
+      currentUser: {
+        id: newOwner.id,
+        email: newOwner.email,
+        role: newOwner.role,
       },
     });
   } catch (error) {
@@ -90,12 +91,10 @@ exports.loginOwner = async function (req, res) {
       return res.status(200).json({
         success: true,
         message: "Owner login successful",
-        data: {
-          owner: {
-            email: owner.email,
-            fullname: owner.fullname,
-            role: owner.role,
-          },
+        currentUser: {
+          id: owner.id,
+          email: owner.email,
+          role: owner.role,
         },
       });
     } // if password not matches

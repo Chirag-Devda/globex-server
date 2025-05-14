@@ -6,41 +6,20 @@ const router = express.Router();
 
 router.get("/me", isAuth, async (req, res) => {
   try {
-    if (req.user) {
-      const user = await userModel
-        .findOne({ email: req.user.email })
-        .select("-password");
+    const { email, role } = req.currentUser;
 
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
+    let model;
+    if (role === "user") model = userModel;
+    else if (role === "owner") model = ownerModel;
+    else return res.status(403).json({ message: "Invalid role." });
 
-      return res.json({
-        id: user.id,
-        email: user.email,
-        role: user.role,
-      });
-    }
+    const user = await model.findOne({ email }).select("-password");
 
-    if (req.owner) {
-      const owner = await ownerModel
-        .findOne({ email: req.owner.email })
-        .select("-password");
-
-      if (!owner) {
-        return res.status(404).json({ message: "Owner not found" });
-      }
-
-      return res.json({
-        id: owner.id,
-        email: owner.email,
-        role: owner.role,
-      });
-    }
-
-    return res
-      .status(400)
-      .json({ message: "No user or owner found in the session" });
+    return res.json({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+    });
   } catch (error) {
     return res
       .status(500)

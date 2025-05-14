@@ -47,12 +47,10 @@ exports.createUser = async function (req, res) {
     return res.status(201).json({
       success: true,
       message: "Registered successfully",
-      data: {
-        user: {
-          email: newUser.email,
-          fullname: newUser.fullname,
-          role: newUser.role,
-        },
+      currentUser: {
+        id: newUser.id,
+        email: newUser.email,
+        role: newUser.role,
       },
     });
   } catch (error) {
@@ -91,12 +89,10 @@ exports.loginUser = async function (req, res) {
       return res.status(200).json({
         success: true,
         message: "Login successful.",
-        data: {
-          user: {
-            email: user.email,
-            fullname: user.fullname,
-            role: user.role,
-          },
+        currentUser: {
+          id: user.id,
+          email: user.email,
+          role: user.role,
         },
       });
     } else {

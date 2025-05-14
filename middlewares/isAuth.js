@@ -13,13 +13,7 @@ module.exports = async (req, res, next) => {
   try {
     let decoded = jwt.verify(token, process.env.JWT_KEY);
     const { email, id, role } = decoded;
-
-    if (role === "user") {
-      req.user = { id, email, role: "user" };
-    } else if (role === "owner") {
-      req.owner = { id, email, role: "owner" };
-    }
-
+    req.currentUser = { id, email, role };
     next();
   } catch (error) {
     console.error("Auth Middleware Error:", error.message);
@@ -29,3 +23,4 @@ module.exports = async (req, res, next) => {
     });
   }
 };
+// req.currentUser

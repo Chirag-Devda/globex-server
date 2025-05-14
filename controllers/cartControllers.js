@@ -4,7 +4,7 @@ const userModel = require("../models/user-model");
 exports.getCartItems = async function (req, res) {
   try {
     const user = await userModel
-      .findOne({ email: req.user.email })
+      .findOne({ email: req.currentUser.email })
       .populate("cart.product");
 
     let totalBill = 0;
@@ -52,7 +52,7 @@ exports.addToCart = async function (req, res) {
     }
 
     // Find the user by email
-    const user = await userModel.findOne({ email: req.user.email });
+    const user = await userModel.findOne({ email: req.currentUser.email });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -106,7 +106,7 @@ exports.updateCartQuantity = async function (req, res) {
     }
 
     // Find User
-    const user = await userModel.findOne({ email: req.user.email });
+    const user = await userModel.findOne({ email: req.currentUser.email });
 
     // Find the specific cart item
     const cartItem = user.cart.find(
@@ -155,7 +155,7 @@ exports.deleteCartItem = async function (req, res) {
     const { productId } = req.params;
 
     // Find the user and update their cart
-    const user = await userModel.findOne({ email: req.user.email });
+    const user = await userModel.findOne({ email: req.currentUser.email });
     user.cart = user.cart.filter(
       (item) => item.product.toString() !== productId
     );

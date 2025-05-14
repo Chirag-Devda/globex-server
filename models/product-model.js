@@ -8,7 +8,8 @@ const productSchema = mongoose.Schema(
     price: Number,
     discount: { type: Number, default: 0 },
     description: String,
-    category: String, // Changed to a single category field
+    category: String,
+    subcategory: String,
     stockQuantity: Number,
     createdAt: {
       type: Date,
