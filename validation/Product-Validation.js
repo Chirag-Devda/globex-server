@@ -1,17 +1,26 @@
 const Joi = require("joi");
 
 const productValidationSchema = Joi.object({
-  name: Joi.string().min(1).max(255).required(),
-  image: Joi.binary().optional(),
-  imageUrl: Joi.string().optional().allow(""),
+  title: Joi.string().min(1).max(255).required(),
+  images: Joi.array()
+    .items(Joi.binary())
+    .required()
+    .messages({ "any.required": "abe yar photo toh bhej!🤣" }),
   price: Joi.number().positive().required(),
-  discount: Joi.number().optional().min(0).max(100),
+  discountPercentage: Joi.number().optional().min(0).max(100),
+  finalPrice: Joi.number().positive().required(),
   description: Joi.string().min(1).max(1000).optional(),
   category: Joi.string().min(1).max(255).required(),
-  stockQuantity: Joi.number().integer().min(0).required(),
-  tags: Joi.string().optional().allow(""),
+  subCategory: Joi.string().min(1).max(255).required(),
+  itemType: Joi.string().min(1).max(255).required(),
+  stock: Joi.number().integer().min(0).required(),
+  sizes: Joi.array().items(Joi.string()).default([]),
+  colors: Joi.array().items(Joi.string).default([]),
+  brand: Joi.string().required(),
+  tags: Joi.array().items(Joi.string).default([]).optional(),
   salesTaxRate: Joi.number().optional().min(0).max(100),
   isActive: Joi.boolean().optional(),
+  reviews: Joi.array().items(Joi.object()).default([]),
 });
 
 module.exports = productValidationSchema;

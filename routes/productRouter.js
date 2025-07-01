@@ -15,7 +15,7 @@ router.post(
   "/create",
   isAuth,
   hasRole("owner"),
-  upload.single("image"),
+  upload.array("images"),
   createProduct // Handle image upload
 );
 

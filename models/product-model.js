@@ -2,15 +2,22 @@ const mongoose = require("mongoose");
 
 const productSchema = mongoose.Schema(
   {
-    name: String,
-    image: Buffer,
-    imageUrl: String,
-    price: Number,
-    discount: { type: Number, default: 0 },
+    title: String, // "Cotton Round Neck T-Shirt"
     description: String,
-    category: String,
-    subcategory: String,
-    stockQuantity: Number,
+    price: Number, //999
+    discountPercentage: Number, //20
+    finalPrice: Number, // price - discount
+    stock: Number, // 10 , 20 etc
+    sizes: [String], // ["S", "M", "L", "XL"]
+    colors: [String], // ["Red", "Blue", "Black"]
+    images: [String], // array of image URLs
+    brand: String, // "Roadster", "Nike"
+    category: String, // "Men", "Women", "Kids"
+    subCategory: String, // "Topwear", "Bottomwear", "Footwear"
+    itemType: String, // "T-Shirt", "Shirt", "Jeans", etc.
+    tags: [String],
+    salesTaxRate: { type: Number, default: 0 },
+    isActive: { type: Boolean, default: true },
     createdAt: {
       type: Date,
       default: Date.now,
@@ -33,9 +40,6 @@ const productSchema = mongoose.Schema(
         },
       },
     ],
-    tags: [String],
-    salesTaxRate: { type: Number, default: 0 },
-    isActive: { type: Boolean, default: true },
   },
   {
     timestamps: true,

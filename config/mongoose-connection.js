@@ -3,7 +3,7 @@ const config = require("config");
 
 const dbgr = require("debug")("development:mongoose");
 
-const dbURI = `${config.get("MONGODB_URI")}/Backend-Project-1-ecommerce`;
+const dbURI = `${config.get("MONGODB_URI")}/Globex-Ecommerce-Project`;
 
 mongoose
   .connect(dbURI)

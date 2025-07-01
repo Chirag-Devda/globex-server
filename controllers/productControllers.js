@@ -1,14 +1,14 @@
 const productValidationSchema = require("../validation/Product-Validation");
 const productModal = require("../models/product-model");
+const cloudinary = require("../config/cloudinary");
 
 exports.createProduct = async function (req, res) {
   const isActiveBoolean = req.body.isActive === "on";
-
   // Construct the data to validate
   let dataToValidate = {
     ...req.body,
     isActive: isActiveBoolean,
-    image: req.file ? req.file.buffer : undefined,
+    images: req.files?.images?.map((file) => file.buffer) || [],
   };
 
   // Validate the incoming data with Joi
@@ -22,44 +22,62 @@ exports.createProduct = async function (req, res) {
   }
 
   try {
+    const files = req.files;
+
+    if (!req.files || req.files.length === 0) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Images are required" });
+    }
+
+    const imageLinks = []; // Store all the images Url of the product
+
+    // Upload all images to Cloudinary
+    for (const file of files) {
+      const base64Image = `data:${file.mimetype};base64,${file.buffer.toString(
+        "base64"
+      )}`;
+
+      const result = await cloudinary.uploader.upload(base64Image, {
+        folder: "products",
+      });
+
+      imageLinks.push(result.secure_url);
+    }
+
     // Destructure fields
     const {
-      name,
-      price,
-      imageUrl,
-      discount,
+      title,
       description,
+      price,
+      discountPercentage,
+      finalPrice,
+      stock,
+      sizes,
+      colors,
+      brand,
       category,
-      stockQuantity,
+      subCategory,
+      itemType,
       tags,
       salesTaxRate,
     } = req.body;
 
-    // Ensure image is either uploaded as a file or URL is provided
-    if (!req.file && !imageUrl) {
-      return res.status(400).json({
-        success: false,
-        message: "Image file or URL is required.",
-      });
-    }
-
-    if (req.file && imageUrl) {
-      return res.status(400).json({
-        success: false,
-        message: "Provide either an image file or URL, not both.",
-      });
-    }
-
     // Create the product in the database
     let product = await productModal.create({
-      name,
-      price,
-      image: req.file ? req.file.buffer : undefined, // Store buffer if uploaded, null if not
-      imageUrl: imageUrl || undefined, // Store imageUrl if provided, otherwise null
-      discount,
+      title,
       description,
+      price,
+      discountPercentage,
+      finalPrice,
+      stock,
+      sizes,
+      colors,
+      brand,
+      images: imageLinks,
       category,
-      stockQuantity,
+      subCategory,
+      itemType,
       tags: tags ? tags.split(",").map((tag) => tag.trim()) : [], // Ensure tags is an array
       salesTaxRate: salesTaxRate || 0,
       isActive: isActiveBoolean, // Ensure isActive is boolean
