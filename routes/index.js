@@ -1,5 +1,4 @@
 const express = require("express");
-const { message } = require("../validation/User-Validation");
 const router = express.Router();
 
 router.get("/", (req, res) => {

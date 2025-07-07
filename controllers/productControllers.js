@@ -2,6 +2,30 @@ const productValidationSchema = require("../validation/Product-Validation");
 const productModal = require("../models/product-model");
 const cloudinary = require("../config/cloudinary");
 
+exports.getAllProducts = async (req, res) => {
+  const { category, subCategory, itemType, brand } = req.query;
+
+  const filter = {};
+
+  if (category) filter.category = category;
+  if (subCategory) filter.subCategory = subCategory;
+  if (itemType) filter.itemType = itemType;
+  if (brand) filter.brand = brand;
+
+  try {
+    const products = await productModal.find(filter);
+    return res.status(200).json({ success: true, products });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message:
+        process.env.NODE_ENV === "development"
+          ? error.message
+          : "Failed to fetch filtered products. Please try again later.",
+    });
+  }
+};
+
 exports.createProduct = async function (req, res) {
   const isActiveBoolean = req.body.isActive === "on";
   // Construct the data to validate

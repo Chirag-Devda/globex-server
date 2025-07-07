@@ -7,8 +7,12 @@ const {
   deleteProduct,
   showUpdateProductForm,
   updateProduct,
+  getAllProducts,
 } = require("../controllers/productControllers");
 const hasRole = require("../middlewares/hasRole");
+
+// get all the filter products from database based on query
+router.get("/", isAuth, getAllProducts);
 
 // create product
 router.post(
