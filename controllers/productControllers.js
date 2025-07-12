@@ -3,7 +3,15 @@ const productModal = require("../models/product-model");
 const cloudinary = require("../config/cloudinary");
 
 exports.getAllProducts = async (req, res) => {
-  const { category, subCategory, itemType, brand } = req.query;
+  const {
+    category,
+    subCategory,
+    itemType,
+    brand,
+    finalPrice,
+    page = 1,
+    limit = 12,
+  } = req.query;
 
   const filter = {};
 
@@ -11,10 +19,21 @@ exports.getAllProducts = async (req, res) => {
   if (subCategory) filter.subCategory = subCategory;
   if (itemType) filter.itemType = itemType;
   if (brand) filter.brand = brand;
+  if (finalPrice) filter.finalPrice = { $lte: Number(finalPrice) };
 
   try {
-    const products = await productModal.find(filter);
-    return res.status(200).json({ success: true, products });
+    const totalItems = await productModal.countDocuments(filter); //Count total filtered products
+    const totalPages = Math.ceil(totalItems / limit);
+    const currentPage = Number(page);
+    const skip = (currentPage - 1) * limit;
+
+    const products = await productModal
+      .find(filter)
+      .skip(skip)
+      .limit(Number(limit));
+    return res
+      .status(200)
+      .json({ success: true, totalItems, totalPages, products });
   } catch (error) {
     return res.status(500).json({
       success: false,
